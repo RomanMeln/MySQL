@@ -1,0 +1,60 @@
+--Практическое задание по теме “Оптимизация запросов”.
+--1.Создайте таблицу logs типа Archive. Пусть при каждом создании записи в таблицах users,
+--catalogs и products в таблицу logs помещается время и дата создания записи, название таблицы,
+--идентификатор первичного ключа и содержимое поля name.
+
+CREATE TABLE logs (
+  name_tbl VARCHAR(20) NOT NULL,
+  key_id INT UNSIGNED NOT NULL,
+  name VARCHAR(255),
+  created_at DATETIME DEFAULT NOW()
+) ENGINE=ARCHIVE;
+
+CREATE TRIGGER users_log AFTER INSERT ON users FOR EACH ROW
+  INSERT INTO logs 
+    SET 
+      name_tbl = 'users',
+      key_id = NEW.id,
+      name = NEW.name;
+
+CREATE TRIGGER catalogs_log AFTER INSERT ON catalogs FOR EACH ROW
+  INSERT INTO logs 
+    SET 
+      name_tbl = 'catalogs',
+      key_id = NEW.id,
+      name = NEW.name;
+
+CREATE TRIGGER products_log AFTER INSERT ON products FOR EACH ROW
+  INSERT INTO logs 
+    SET 
+      name_tbl = 'products',
+      key_id = NEW.id,
+      name = NEW.name;
+
+--Практическое задание по теме “NoSQL”.
+--1.В базе данных Redis подберите коллекцию для подсчета посещений с определенных IP-адресов.
+
+
+
+-- не понял
+
+
+
+--2.При помощи базы данных Redis решите задачу поиска имени пользователя по электронному адресу и наоборот,
+--поиск электронного адреса пользователя по его имени.
+
+--SET key 'значение' вставка по методичке
+
+SET email user_name
+SET user_name email
+
+-- GET key - извлечение по методичке
+
+GET email
+GET user_name
+
+--3.Организуйте хранение категорий и товарных позиций учебной базы данных shop в СУБД MongoDB.
+--База данных автоматически появляется, как только в нее будет вставлен хотя бы один документ.
+
+db.shop.insert({catalogs: ['Процессоры','Материнские платы','Видеокарты','Жесткие диски','Оперативная память']})
+db.shop.update({catalogs: 'Процессоры'}, {$set: {name: 'Intel Core i5-7400}})'
